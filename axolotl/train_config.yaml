@@ -1,54 +1,37 @@
-base_model: mistralai/Mistral-7B-Instruct-v0.2
+base_model: lightblue/mistralv0.2_finetuning_20240226_4
 model_type: MistralForCausalLM
 tokenizer_type: LlamaTokenizer
 is_mistral_derived_model: true
 
 load_in_8bit: false
-load_in_4bit: true
+load_in_4bit: false
 strict: false
 
 datasets:
-  - path: /workspace/multi_context_closed_qa.json
+  - path: /workspace/llm_training/axolotl/multi_context_closed_qa.json
     ds_type: json # see other options below
     type: sharegpt
     conversation: mistral
-dataset_prepared_path: ./prepared_dataset_multi_context_closed_qa_ft_1
-val_set_size: 0.01
-output_dir: ./multi_context_closed_qa_ft_1
-
-adapter: qlora
-lora_model_dir:
+dataset_prepared_path: ./prepared_dataset_multi_context_closed_qa_ft_6
+val_set_size: 0.001
+output_dir: ./multi_context_closed_qa_ft_6
 
 use_wandb: true
 wandb_project: axolotl_azure
 wandb_entity: peterd
-wandb_name: multi_context_closed_qa_ft_1
+wandb_name: multi_context_closed_qa_ft_6
 
 sequence_len: 32000
 sample_packing: true
 pad_to_sequence_len: true
 eval_sample_packing: false
 
-lora_r: 32
-lora_alpha: 16
-lora_dropout: 0.05
-lora_target_linear: true
-lora_fan_in_fan_out:
-lora_target_modules:
-  - gate_proj
-  - down_proj
-  - up_proj
-  - q_proj
-  - v_proj
-  - k_proj
-  - o_proj
-
-gradient_accumulation_steps: 1
+gradient_accumulation_steps: 4
 micro_batch_size: 1
-num_epochs: 3
+num_epochs: 1
 optimizer: adamw_bnb_8bit
 lr_scheduler: cosine
-learning_rate: 0.0002
+learning_rate: 0.000005
 
 train_on_inputs: false
 group_by_length: false
@@ -65,8 +48,8 @@ xformers_attention:
 flash_attention: true
 
 warmup_steps: 10
-evals_per_epoch: 2
-saves_per_epoch: 2
+evals_per_epoch: 5
+saves_per_epoch: 5
 debug:
 deepspeed:
 weight_decay: 0.0
